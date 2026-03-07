@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -29,6 +30,7 @@ public class JwtService {
 
     @Value("${jwt.expiration}")
     private long jwtExpiration; // en milisegundos
+    public JwtService(){}
 
     /**
      * Genera un JWT a partir del nombre de usuario y el identificador de usuario.
@@ -111,6 +113,10 @@ public class JwtService {
     private SecretKey getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+    final String username = extractUsername(token);
+    return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }
 

@@ -9,8 +9,11 @@ import com.thiago.imageprocessor.dto.LoginRequest;
 import com.thiago.imageprocessor.dto.RegisterRequest;
 import com.thiago.imageprocessor.model.User;
 import com.thiago.imageprocessor.repository.UserRepository;
+import org.springframework.security.core.userdetails.*;
+import com.thiago.imageprocessor.model.Role;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -28,6 +31,7 @@ public class UserService {
         var user = new com.thiago.imageprocessor.model.User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
         // Generar token JWT
         String token = jwtService.generateToken(user.getUsername(), user.getId());
@@ -74,5 +78,18 @@ public class UserService {
     }
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+     @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return org.springframework.security.core.userdetails.User
+                .builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 }
