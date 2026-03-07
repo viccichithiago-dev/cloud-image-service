@@ -1,10 +1,20 @@
 package com.thiago.imageprocessor.model;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.*;
-import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
@@ -20,7 +30,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
     @NotBlank(message="Error la contraseña no puede estar vacia")
-    @Size(min=6, max=20, message="Error la contraseña debe tener entre 6 y 20 caracteres")
     @Column(nullable = false)
     @JsonIgnore
     private String password;

@@ -1,15 +1,24 @@
 package com.thiago.imageprocessor.model;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import com.fasterxml.jackson.annotation.*;
-
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -20,32 +29,25 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank(message="Error el nombre del archivo no puede estar vacio")
     @Column(nullable = false)
-    private String nombrearchivo;
+    private String nombreArchivo;
     
     @Column()
-    @NotBlank(message="Error el nombre original del archivo no puede estar vacio")
-    private String originalNombrearchivo;
+    private String originalNombreArchivo;
     
     @Column()
-    @NotBlank(message="Error la url no puede estar vacia")
     private String url;
     
     @Column()
-    @Max(value=10485760, message="Error el tamaño del archivo no puede ser mayor a 10MB")
     private Long size;
     
     @Column()
-    @Min(value=1, message="Error el ancho debe ser mayor a 0")
     private int width;
     
     @Column()
-    @Min(value=1, message="Error la altura debe ser mayor a 0")
     private int height;
     
     @Column()
-    @NotBlank(message="Error el tipo MIME no puede estar vacio")
     private String mimeType;
     
     @CreationTimestamp
@@ -62,6 +64,7 @@ public class Image {
     private User usuario;
     
     @Column()
+    @Enumerated(EnumType.STRING)
     private ImageStatus status;
     
     @PrePersist
@@ -72,9 +75,10 @@ public class Image {
     }
     public Image() {
     }
-    public Image(String nombrearchivo, String url, User usuario) {
-        this.nombrearchivo = nombrearchivo;
+    public Image(String nombreArchivo, String url, User usuario) {
+        this.nombreArchivo = nombreArchivo;
         this.url = url;
         this.usuario = usuario;
+        this.status = ImageStatus.ESPERANDO;
     }
 }
