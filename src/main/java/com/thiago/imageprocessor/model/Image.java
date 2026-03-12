@@ -17,13 +17,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "images")
+@Data // Genera getters, setters, toString, etc.
+@Builder // <--- ESTO ES LO QUE TE FALTA
+@AllArgsConstructor // Necesario para @Builder
+@NoArgsConstructor  // Necesario para JPA
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,8 +80,6 @@ public class Image {
         if (status == null) {
             status = ImageStatus.ESPERANDO;
         }
-    }
-    public Image() {
     }
     public Image(String nombreArchivo, String url, User usuario) {
         this.nombreArchivo = nombreArchivo;
