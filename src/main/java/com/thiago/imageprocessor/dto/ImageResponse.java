@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import com.thiago.imageprocessor.model.ImageStatus;
 
+import lombok.Builder;
+
+@Builder // Suficiente para crear instancias fluidas
 public record ImageResponse(
     Long id,
     String nombreArchivo,
@@ -15,5 +18,5 @@ public record ImageResponse(
     String mimeType,
     ImageStatus status,
     LocalDateTime createdAt,
-    Long userId // Solo enviamos el ID del usuario, no el objeto completo
-) {}
+    Long userId
+){}
