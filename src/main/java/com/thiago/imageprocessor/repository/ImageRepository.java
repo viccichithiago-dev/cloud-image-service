@@ -24,4 +24,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     void deleteByIdAndUsuario(Long id, User usuario);
     // Metodo para buscar por nombre original
     Page<Image> findByUsuarioIdAndOriginalNombrearchivoContainingIgnoreCase(Long userId, String nombre, Pageable pageable);
+    // Metodo para get image
 }
