@@ -69,4 +69,15 @@ public class GlobalExceptionHandler {
                                 .body(error);
 
     }
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleImageNotFoundException(ImageNotFoundException ex)  {
+        logger.error("ImageNotFoundException captured", ex);
+        ErrorResponse error = new ErrorResponse();
+        error.setMensaje(ex.getMessage());
+        error.setTimestamp(LocalDateTime.now());
+        error.setStatusCode(HttpStatus.NOT_FOUND.value());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
 }
