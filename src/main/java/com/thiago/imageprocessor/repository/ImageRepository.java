@@ -11,7 +11,7 @@ import com.thiago.imageprocessor.model.User;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
     // Metodo para encontrar una imagen por su usuario
-    Optional<Image> findByUsuario(User usuario);
+    Page<Image> findByUsuario(User usuario,Pageable pageable);
     // Metodo para encontrar una imagen por ID y Usuario
     Optional<Image> findByIdAndUsuario(Long id, User usuario);
     // Metodo para buscar una imagen por su ID
@@ -23,6 +23,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     // Metodo para eliminar una imagen por su ID y Usuario
     void deleteByIdAndUsuario(Long id, User usuario);
     // Metodo para buscar por nombre original
-    Page<Image> findByUsuarioIdAndOriginalNombrearchivoContainingIgnoreCase(Long userId, String nombre, Pageable pageable);
+    Page<Image> findByUsuarioIdAndOriginalNombreArchivoContainingIgnoreCase(Long userId, String nombre, Pageable pageable);
     // Metodo para get image
 }
