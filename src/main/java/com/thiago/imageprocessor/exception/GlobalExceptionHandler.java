@@ -29,6 +29,9 @@ public class GlobalExceptionHandler {
         error.setMensaje(ex.getMessage());
         error.setTimestamp(LocalDateTime.now());
 
+        if (ex instanceof InvalidImageFormatException) {
+            error.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        }
         if (ex.getMessage().contains("El nombre de usuario ya está en uso")) {
             error.setStatusCode(409);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
@@ -81,3 +84,5 @@ public class GlobalExceptionHandler {
     }
 
 }
+
+
