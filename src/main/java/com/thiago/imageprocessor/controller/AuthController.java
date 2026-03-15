@@ -16,10 +16,16 @@ import com.thiago.imageprocessor.model.User;
 import com.thiago.imageprocessor.service.JwtService;
 import com.thiago.imageprocessor.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticación", description = "Endpoints para el registro y login de usuarios")
 public class AuthController {
     private final UserService userService;
     private final JwtService jwtService;
@@ -28,11 +34,21 @@ public class AuthController {
         this.userService = userService;
         this.jwtService = jwtService;
     }
+    @Operation(summary = "Registrar un nuevo usuario", description = "Crea un usuario en el sistema y retorna un token JWT.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos", content = @Content)
+    })
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         AuthResponse response = userService.registerUsuario(registerRequest);
         return ResponseEntity.ok(response);
     }
+    @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y devuelve un token de acceso.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Login exitoso"),
+        @ApiResponse(responseCode = "401", description = "Credenciales incorrectas", content = @Content)
+    })
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         AuthResponse response = userService.loginUsuario(loginRequest);
