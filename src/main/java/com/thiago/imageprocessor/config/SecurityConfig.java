@@ -40,6 +40,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/auth/**").permitAll() // Permite login y register
                 .requestMatchers("/api/images/upload").authenticated() // Protege la subida
+                .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             // Agregamos el filtro manualmente aquí
