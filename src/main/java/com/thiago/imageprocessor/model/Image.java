@@ -1,12 +1,15 @@
 package com.thiago.imageprocessor.model;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -74,6 +77,13 @@ public class Image {
     @Column()
     @Enumerated(EnumType.STRING)
     private ImageStatus status;
+    @ElementCollection
+    @CollectionTable(
+        name = "image_transformed_urls", 
+        joinColumns = @JoinColumn(name = "image_id")
+    )
+    @Column(name = "url")
+    private List<String> transformedUrls;
     
     @PrePersist
     protected void onCreate() {

@@ -3,6 +3,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import javax.imageio.ImageIO;
+import software.amazon.awssdk.core.sync.RequestBody;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,24 +26,43 @@ public class S3StorageServiceImpl implements StorageService {
     public S3StorageServiceImpl(S3Client s3Client) {
         this.s3Client = s3Client;
     }
-
+    // MÉTODO A: Para el archivo original (MultipartFile)
     @Override
     public String uploadFile(MultipartFile file) {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        
+        try {
+            s3Client.putObject(PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .contentType(file.getContentType())
+                    .build(),
+                RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+            
+            return String.format("http://localhost:4566/%s/%s", bucketName, fileName);
+        } catch (IOException e) {
+            throw new RuntimeException("Error al subir MultipartFile a S3", e);
+        }
+    }
+    @Override
+    public String uploadFile(java.awt.image.BufferedImage image, String fileName, String format) throws IOException {
+        // 1. Convertir BufferedImage a bytes en memoria
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, format, baos);
+        byte[] bytes = baos.toByteArray();
+
+        String finalFileName = UUID.randomUUID() + "_" + fileName;
+
         try {
             s3Client.putObject(PutObjectRequest.builder()
                             .bucket(bucketName)
-                            .key(fileName)
-                            .contentType(file.getContentType())
+                            .key(finalFileName)
+                            .contentType("image/" + format)
                             .build(),
-                    RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            
-            // IMPORTANTE: En LocalStack la URL es diferente a la de AWS real
-            return String.format("http://localhost:4566/%s/%s", bucketName, fileName);
-            
-        } catch (IOException e) {
-            throw new RuntimeException("Error al subir archivo a S3", e);
+                    RequestBody.fromBytes(bytes)); // Usamos fromBytes en lugar de InputStream
+
+            return String.format("http://localhost:4566/%s/%s", bucketName, finalFileName);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al subir imagen procesada a S3", e);
         }
     }
 

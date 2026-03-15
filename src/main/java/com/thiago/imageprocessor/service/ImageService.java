@@ -1,11 +1,15 @@
 package com.thiago.imageprocessor.service;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
+
 import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +22,6 @@ import com.thiago.imageprocessor.model.ImageStatus;
 import com.thiago.imageprocessor.model.User;
 import com.thiago.imageprocessor.repository.ImageRepository;
 import com.thiago.imageprocessor.repository.UserRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 @Service
 public class ImageService {
     
@@ -58,6 +60,7 @@ public class ImageService {
             .nombreArchivo(image.getNombreArchivo())
             .originalNombreArchivo(image.getOriginalNombreArchivo())
             .url(image.getUrl())
+            .transformedUrls(new java.util.ArrayList<>(image.getTransformedUrls()))
             .size(image.getSize())
             .width(image.getWidth())
             .height(image.getHeight())
