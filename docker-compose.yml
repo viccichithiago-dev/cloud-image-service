@@ -1,0 +1,25 @@
+services:
+  # Base de Datos ajustada a tus propiedades
+  postgres:
+    image: postgres:15-alpine
+    container_name: image-processor-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Losprimos123
+      - POSTGRES_DB=imageprocessor
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  # Simulador de S3 (LocalStack)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: image-processor-s3
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - "./localstack_volume:/var/lib/localstack"
